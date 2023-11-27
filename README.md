@@ -1,0 +1,1 @@
+CSE370 Lab Project Event-management system
