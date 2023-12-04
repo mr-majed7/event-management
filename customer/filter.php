@@ -25,9 +25,6 @@
                 </form>
                 <a href="customer_home.php" class="btn btn-outline-info my-2 my-sm-0" role="button">Home</a>
                 <a href="../index.html" class="btn btn-outline-primary my-2 my-sm-0" role="button">Logout</a>
-                
-
-
             </nav>
         <?php
         include_once("../db_connection.php");

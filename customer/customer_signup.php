@@ -2,9 +2,6 @@
 include_once("../db_connection.php");
 
 
-$sqlLastID = "SELECT id FROM Customer ORDER BY id DESC LIMIT 1";
-$resultLastID = $conn->query($sqlLastID);
-
 $sqlGetMaxID = "SELECT MAX(CAST(SUBSTRING(id, 2) AS UNSIGNED)) AS max_id FROM Customer";
 $resultMaxID = $conn->query($sqlGetMaxID);
 
@@ -13,7 +10,7 @@ if ($resultMaxID && $resultMaxID->num_rows > 0) {
     $maxID = $row["max_id"];
     $newID = "C" . ($maxID + 1);
 } else {
-    $newID = "C1"; // If there are no existing customers
+    $newID = "C1"; 
 }
 
 $firstName = $_POST['firstName'];

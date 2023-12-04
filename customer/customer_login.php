@@ -5,7 +5,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
     $password = $_POST["password"];
 
-    // Prepare and execute the query to check if the user exists
     $stmt = $conn->prepare("SELECT * FROM customer WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
