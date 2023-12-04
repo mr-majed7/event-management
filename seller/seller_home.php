@@ -24,7 +24,7 @@
         <?php
         include_once("../db_connection.php");
         $manager_id = isset($_GET['manager_id']) ? $_GET['manager_id'] : null;
-        $sql = "SELECT Venue.name AS venue_name, Venue.area, Venue.city, Venue.price, Venue.capacity 
+        $sql = "SELECT Venue.id AS ven_id, Venue.name AS venue_name, Venue.area, Venue.city, Venue.price, Venue.capacity, Venue.booking_status 
                   FROM Venue 
                   INNER JOIN Manager ON Venue.id = Manager.ven_id 
                   WHERE Manager.id = '$manager_id'";
@@ -41,6 +41,8 @@
                         <th scope="col">City</th>
                         <th scope="col">Price</th>
                         <th scope="col">Capacity</th>
+                        <th scope="col">Booking Status</th>
+                        <th scope="col">Actions</th>
                     </tr>
                   </thead>';
             echo '<tbody>';
@@ -51,6 +53,14 @@
                 echo '<td>' . $row['city'] . '</td>';
                 echo '<td>' . $row['price'] . '</td>';
                 echo '<td>' . $row['capacity'] . '</td>';
+                echo '<td>' . ($row['booking_status'] == 1 ? 'Booked' : 'Available') . '</td>';
+                echo '<td>';
+                echo '<form action="change_status.php" method="get">';
+                echo '<input type="hidden" name="manager_id" value="' . $manager_id . '">';
+                echo '<input type="hidden" name="ven_id" value="' . $row['ven_id'] . '">';
+                echo '<button type="submit" class="btn btn-secondary btn-sm">Change Status</button>';
+                echo '</form>';
+                echo '</td>';
                 echo '</tr>';
             }
             echo '</tbody>';
@@ -60,12 +70,11 @@
             echo '<div class="text-center">';
             echo '<button type="button" class="btn btn-info btn-lg btn-block">EDIT</button>';
             echo '</div>';
-            echo '<div class="text-center">';
-            echo '<button type="button" class="btn btn-danger btn-lg btn-block">DELETE</button>';
-            echo '</div>';
             echo '</div>';
         } else {
-            echo 'No venues found.';
+            echo '<div class="text-center mt-3">';
+            echo '<a href="add_venueForm.php?manager_id=' . $manager_id . '" class="btn btn-success btn-lg" role="button">Add Venue</a>';
+            echo '</div>';
         }
         ?>
     </div>
