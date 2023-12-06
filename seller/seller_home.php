@@ -68,7 +68,7 @@
 
             echo '<div class="d-flex justify-content-center mt-3">';
             echo '<div class="text-center">';
-            echo '<button type="button" class="btn btn-info btn-lg btn-block">EDIT</button>';
+            echo '<a href="edit_venueForm.php?manager_id=' . $manager_id . '" class="btn btn-info btn-lg btn-block">Edit</a>';
             echo '</div>';
             echo '</div>';
         } else {
