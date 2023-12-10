@@ -5,40 +5,45 @@ include_once("../db_connection.php");
 // Get manager_id from the URL parameter
 $manager_id = isset($_GET['manager_id']) ? $_GET['manager_id'] : null;
 
-// Initialize variables
-$bookings = array();
+if ($manager_id) {
+    // Prepare the SQL query to retrieve bookings information for the provided manager_id
+    $query = "SELECT Bookings.ven_id, Venue.name AS venue_name, Bookings.cust_id, Customer.first_name AS customer_name, 
+              Bookings.ev_id, Events.name AS event_name, Bookings.supp_id, Supplier.name AS supplier_name 
+              FROM Bookings 
+              LEFT JOIN Venue ON Bookings.ven_id = Venue.id 
+              LEFT JOIN Customer ON Bookings.cust_id = Customer.id 
+              LEFT JOIN Events ON Bookings.ev_id = Events.id 
+              LEFT JOIN Supplier ON Bookings.supp_id = Supplier.id 
+              WHERE Venue.id = (SELECT ven_id FROM Manager WHERE id = ?)";
 
-// Check if manager_id is provided
-if ($manager_id !== null) {
-    // SQL query to fetch bookings for the specific manager_id
-    $query = "SELECT b.*, v.name AS venue_name, c.first_name, c.last_name AS customer_name, e.name AS event_name, s.name AS supplier_name
-              FROM Bookings b
-              INNER JOIN Venue v ON b.ven_id = v.id
-              INNER JOIN Customer c ON b.cust_id = c.id
-              INNER JOIN Events e ON b.ev_id = e.id
-              INNER JOIN Supplier s ON b.supp_id = s.id
-              INNER JOIN Manager m ON v.id = m.ven_id
-              WHERE m.id = ?";
-
-    // Use prepared statement to prevent SQL injection
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $manager_id);
-    $stmt->execute();
-
-    $result = $stmt->get_result();
-
-    // Check if any bookings found
-    if ($result->num_rows > 0) {
-        // Loop through each row and store data in array
-        while ($row = $result->fetch_assoc()) {
-            $bookings[] = $row;
+    // Prepare and bind the statement
+    if ($stmt = $conn->prepare($query)) {
+        $stmt->bind_param("s", $manager_id);
+        
+        // Execute the query
+        $stmt->execute();
+        
+        // Get result
+        $result = $stmt->get_result();
+        
+        // Check if any bookings found
+        if ($result->num_rows > 0) {
+            // Initialize $bookings array
+            $bookings = array();
+            
+            // Loop through each row and store data in array
+            while ($row = $result->fetch_assoc()) {
+                $bookings[] = $row;
+            }
+        } else {
+            echo "<p>No bookings found for the manager!</p>";
         }
-    } else {
-        echo "<p>No bookings found for the manager!</p>";
-    }
 
-    // Close prepared statement
-    $stmt->close();
+        // Close prepared statement
+        $stmt->close();
+    } else {
+        echo "<p>Failed to prepare the statement!</p>";
+    }
 } else {
     echo "<p>Manager ID is not provided!</p>";
 }
