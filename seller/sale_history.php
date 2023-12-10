@@ -2,27 +2,45 @@
 // Include database connection
 include_once("../db_connection.php");
 
+// Get manager_id from the URL parameter
+$manager_id = isset($_GET['manager_id']) ? $_GET['manager_id'] : null;
+
 // Initialize variables
 $bookings = array();
 
-// SQL query to fetch all bookings with joined data
-$query = "SELECT b.*, v.name AS venue_name, c.first_name, c.last_name AS customer_name, e.name AS event_name, s.name AS supplier_name
-FROM Bookings b
-INNER JOIN Venue v ON b.ven_id = v.id
-INNER JOIN Customer c ON b.cust_id = c.id
-INNER JOIN Events e ON b.ev_id = e.id
-INNER JOIN Supplier s ON b.supp_id = s.id";
+// Check if manager_id is provided
+if ($manager_id !== null) {
+    // SQL query to fetch bookings for the specific manager_id
+    $query = "SELECT b.*, v.name AS venue_name, c.first_name, c.last_name AS customer_name, e.name AS event_name, s.name AS supplier_name
+              FROM Bookings b
+              INNER JOIN Venue v ON b.ven_id = v.id
+              INNER JOIN Customer c ON b.cust_id = c.id
+              INNER JOIN Events e ON b.ev_id = e.id
+              INNER JOIN Supplier s ON b.supp_id = s.id
+              INNER JOIN Manager m ON v.id = m.ven_id
+              WHERE m.id = ?";
 
-$result = $conn->query($query);
+    // Use prepared statement to prevent SQL injection
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $manager_id);
+    $stmt->execute();
 
-// Check if any bookings found
-if ($result->num_rows > 0) {
-  // Loop through each row and store data in array
-  while ($row = $result->fetch_assoc()) {
-    $bookings[] = $row;
-  }
+    $result = $stmt->get_result();
+
+    // Check if any bookings found
+    if ($result->num_rows > 0) {
+        // Loop through each row and store data in array
+        while ($row = $result->fetch_assoc()) {
+            $bookings[] = $row;
+        }
+    } else {
+        echo "<p>No bookings found for the manager!</p>";
+    }
+
+    // Close prepared statement
+    $stmt->close();
 } else {
-  echo "<p>No bookings found!</p>";
+    echo "<p>Manager ID is not provided!</p>";
 }
 
 // Close database connection
