@@ -23,7 +23,7 @@ $sqlInsert = "INSERT INTO Manager (id, first_name, last_name, email, phone, pass
               VALUES ('$newID', '$firstName', '$lastName', '$email', '$phone', '$password')";
 
 if ($conn->query($sqlInsert) === TRUE) {
-    header("Location: seller_home.php?Manager_id=" . $newID);
+    header("Location: seller_home.php?manager_id=" . $newID);
     exit();
 } else {
     echo "Error: " . $sqlInsert . "<br>" . $conn->error;
