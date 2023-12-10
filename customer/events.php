@@ -1,46 +1,9 @@
 <?php
 include_once("../db_connection.php");
 
-// Initialize variables to store form data
-$event_name = $event_type = $event_description = "";
-
-// Check if the form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve form data
-    $event_name = isset($_POST['event_name']) ? $_POST['event_name'] : "";
-    $event_type = isset($_POST['event_type']) ? $_POST['event_type'] : "";
-    $event_description = isset($_POST['event_description']) ? $_POST['event_description'] : "";
-
-    // Query to get the maximum existing event ID
-    $sqlGetMaxID = "SELECT MAX(CAST(SUBSTRING(id, 2) AS UNSIGNED)) AS max_id FROM Events";
-    $resultMaxID = $conn->query($sqlGetMaxID);
-
-    if ($resultMaxID && $resultMaxID->num_rows > 0) {
-        $row = $resultMaxID->fetch_assoc();
-        $maxID = $row["max_id"];
-        $newID = "E" . ($maxID + 1);
-    } else {
-        $newID = "E1";
-    }
-
-    // Insert the new event into the Events table
-    $sqlInsertEvent = "INSERT INTO Events (id, name, type, description) VALUES (?, ?, ?, ?)";
-    $stmt = $conn->prepare($sqlInsertEvent);
-    $stmt->bind_param("ssss", $newID, $event_name, $event_type, $event_description);
-
-    // Execute the statement
-    if ($stmt->execute()) {
-        echo "Event added successfully!";
-    } else {
-        echo "Error adding event: " . $stmt->error;
-    }
-
-    // Close the statement
-    $stmt->close();
-}
-
-// Close the database connection
-$conn->close();
+// Retrieve venue_id and customer_id from the URL parameters
+$venue_id = isset($_GET['venue_id']) ? $_GET['venue_id'] : null;
+$customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : null;
 ?>
 
 <!DOCTYPE html>
@@ -110,7 +73,7 @@ $conn->close();
 <body>
     <div class="container">
         <h1>Add Event</h1>
-        <form action="" method="post">
+        <form action="eventsSubmit.php" method="post">
             <label for="event_name">Event Name:</label>
             <input type="text" name="event_name" required>
 
@@ -119,6 +82,8 @@ $conn->close();
 
             <label for="event_description">Event Description:</label>
             <input type="text" name="event_description" required>
+            <input type="hidden" name="venue_id" value="<?php echo $venue_id; ?>">
+            <input type="hidden" name="customer_id" value="<?php echo $customer_id; ?>">
 
             <button type="submit">Add Event</button>
         </form>

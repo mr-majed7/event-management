@@ -2,7 +2,8 @@
 include_once("../db_connection.php");
 
 // Check if venue ID is provided in the URL
-$venue_id = isset($_GET['id']) ? $_GET['id'] : null;
+$venue_id = isset($_GET['venue_id']) ? $_GET['venue_id'] : null;
+$customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : null;
 
 if ($venue_id) {
     // Fetch venue details, manager details, and average rating using JOINs
@@ -98,10 +99,11 @@ HTML;
         echo '<p>Average Rating: ' . ($venueDetails['average_rating'] ? round($venueDetails['average_rating'], 2) : 'No ratings yet') . '</p>';
 
         // "Book Now" button and form
-        echo '<form action="events.php" method="post">';
-        echo '<input type="hidden" name="venue_id" value="' . $venue_id . '">';
-        echo '<button type="submit">BOOK NOW!</button>';
-        echo '</form>';
+	echo '<form action="events.php" method="get">';
+	echo '<input type="hidden" name="venue_id" value="' . $venue_id . '">';
+	echo '<input type="hidden" name="customer_id" value="' . $customer_id . '">';
+	echo '<button type="submit">BOOK NOW!</button>';
+	echo '</form>';
 
     } else {
         echo 'Venue not found.';

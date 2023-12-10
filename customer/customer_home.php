@@ -18,8 +18,8 @@
                 <form class="form-inline" action="filter.php" method="get">
                     <div class="d-flex">
                         <input class="form-control mr-sm-2" type="search" name="city" placeholder="City" aria-label="City">
-                        <input class="form-control mr-sm-2" type="search" name="price" placeholder="Price" aria-label="Price">
-                        <input class="form-control mr-sm-2" type="search" name="capacity" placeholder="Capacity" aria-label="Capacity">
+                        <input class="form-control mr-sm-2" type="search" name="price" placeholder="Maximum Price" aria-label="Price">
+                        <input class="form-control mr-sm-2" type="search" name="capacity" placeholder="Minimum Capacity" aria-label="Capacity">
                         <button class="btn btn-outline-success my-2 my-sm-0 ml-2" type="submit">Filter</button>
                     </div>
                 </form>
@@ -52,7 +52,8 @@
                 echo '</ul>';
                 echo '<div class="card-body">';
                 echo '<form action="details.php" method="get">';
-                echo '<input type="hidden" name="id" value="' . $row["id"] . '">';
+                echo '<input type="hidden" name="venue_id" value="' . $row["id"] . '">';
+		echo '<input type="hidden" name="customer_id" value="' . $customer_id . '">';
                 echo '<button type="submit" class="btn btn-primary">View</button>';
                 echo '</form>';
                 echo '</div>';
