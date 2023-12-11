@@ -85,7 +85,7 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : null;
             <input type="hidden" name="venue_id" value="<?php echo $venue_id; ?>">
             <input type="hidden" name="customer_id" value="<?php echo $customer_id; ?>">
 
-            <button type="submit">Add Event</button>
+            <button type="submit">Add Event & Proceed to Checkout</button>
         </form>
     </div>
 </body>
