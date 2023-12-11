@@ -46,9 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Execute the booking statement
             if ($stmtBooking->execute()) {
                 echo "Event added successfully! Added to Cart Successfully!";
-                // Redirect to checkout.php with the event_id
-                header("Location: checkout.php?event_id=$ev_id");
-                exit(); // Ensure that no further code is executed after the redirect
+
             } else {
                 echo "Error adding booking: " . $stmtBooking->error;
             }
